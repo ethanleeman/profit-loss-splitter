@@ -93,11 +93,17 @@ if add_button:
     st.session_state['amounts'].append(0)
     st.experimental_rerun()
 
-st.write('sum of amounts:', sum(amounts))
+sum_amounts = sum(amounts)
+if sum_amounts > 0.01:
+    st.write(f'sum of amounts: {sum_amounts}. Cannot generate transactions when sum is positive.')
+elif sum_amounts < -0.01:
+    st.write(f'sum of amounts: {sum_amounts}. Cannot generate transactions without distributing excess.')
+else:
+    st.write(f'sum of amounts: {sum_amounts}')
 
-generate_transactions_button = st.button('Generate Transaction List')
+    generate_transactions_button = st.button('Generate Transaction List')
 
-if generate_transactions_button:
-    transactions = generate_transactions(st.session_state['member_names'], st.session_state['amounts'])
-    for trans in transactions:
-        st.write(f'{trans[1]} pays {trans[0]} ${trans[2]}')
+    if generate_transactions_button:
+        transactions = generate_transactions(st.session_state['member_names'], st.session_state['amounts'])
+        for trans in transactions:
+            st.write(f'{trans[1]} pays {trans[0]} ${trans[2]}')
