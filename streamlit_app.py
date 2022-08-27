@@ -50,13 +50,6 @@ if 'member_names' not in st.session_state:
 if 'amounts' not in st.session_state:
     st.session_state['amounts'] = [120, 260, -380]
 
-
-add_button = st.button('add member')
-
-if add_button:
-    st.session_state['number_members'] += 1
-    st.session_state['member_names'].append('')
-    st.session_state['amounts'].append(0)
     
 names = [st.empty() for i in range(st.session_state['number_members'])]
 amounts = [st.empty() for i in range(st.session_state['number_members'])]
@@ -91,6 +84,14 @@ for i in range(st.session_state['number_members']):
         st.session_state['amounts'].pop()  
         st.session_state['number_members'] -= 1
         st.experimental_rerun()
+        
+add_button = st.button('add member')
+
+if add_button:
+    st.session_state['number_members'] += 1
+    st.session_state['member_names'].append('')
+    st.session_state['amounts'].append(0)
+    st.experimental_rerun()
 
 st.write('sum of amounts:', sum(amounts))
 
