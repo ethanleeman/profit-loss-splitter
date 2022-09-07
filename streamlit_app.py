@@ -16,9 +16,9 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 
 from webdriver_manager.chrome import ChromeDriverManager
-service = Service(executable_path=ChromeDriverManager().install())
 
-cloud = True
+
+cloud = False
 
 def generate_transactions(names, amounts):
     assert(len(names) == len(amounts))
@@ -78,15 +78,20 @@ if crawl_website:
     TIMEOUT = 20
     
     if cloud:
-        firefoxOptions = Options()
-        firefoxOptions.add_argument("--headless")
-        service = Service(GeckoDriverManager().install())
-        driver = webdriver.Firefox(
-            options=firefoxOptions,
-            service=service,
-        )
+        service = Service(executable_path=ChromeDriverManager().install())
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        driver = webdriver.Chrome(service=service,options=chrome_options)
+        # firefoxOptions = Options()
+        # firefoxOptions.add_argument("--headless")
+        # service = Service(GeckoDriverManager().install())
+        # driver = webdriver.Firefox(
+        #     options=firefoxOptions,
+        #     service=service,
+        # )
     
     else:
+        service = Service(executable_path=ChromeDriverManager().install())
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         driver = webdriver.Chrome(service=service,options=chrome_options)
