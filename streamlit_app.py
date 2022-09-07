@@ -102,7 +102,7 @@ if crawl_website:
         driver = webdriver.Chrome(service=service,options=chrome_options)
         
     driver.get(URL)
-    driver.implicitly_wait(1)
+    driver.implicitly_wait(5)
     content = driver.find_element(By.CSS_SELECTOR, 'button.button-1.show-log-button.small-button.dark-gray')
     content.click()
     ledger = driver.find_element(By.CSS_SELECTOR, 'button.button-1.green-2.small-button.ledger-button')
