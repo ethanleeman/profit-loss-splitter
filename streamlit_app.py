@@ -1,5 +1,24 @@
 import streamlit as st
 import heapq
+from selenium import webdriver
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from webdriver_manager.firefox import GeckoDriverManager
+
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+
+from webdriver_manager.chrome import ChromeDriverManager
+service = Service(executable_path=ChromeDriverManager().install())
+
+cloud = True
 
 def generate_transactions(names, amounts):
     assert(len(names) == len(amounts))
@@ -50,11 +69,56 @@ if 'member_names' not in st.session_state:
 if 'amounts' not in st.session_state:
     st.session_state['amounts'] = [120, 260, -380]
 
+
+website = st.text_input('PokerNow Website')
+crawl_website = st.button('Fill From Site')
+    
+if crawl_website:
+    URL = website
+    TIMEOUT = 20
+    
+    if cloud:
+        firefoxOptions = Options()
+        firefoxOptions.add_argument("--headless")
+        service = Service(GeckoDriverManager().install())
+        driver = webdriver.Firefox(
+            options=firefoxOptions,
+            service=service,
+        )
+    
+    else:
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        driver = webdriver.Chrome(service=service,options=chrome_options)
+        
+    driver.get(URL)
+    driver.implicitly_wait(1)
+    content = driver.find_element(By.CSS_SELECTOR, 'button.button-1.show-log-button.small-button.dark-gray')
+    content.click()
+    ledger = driver.find_element(By.CSS_SELECTOR, 'button.button-1.green-2.small-button.ledger-button')
+    ledger.click()
+    players = driver.find_elements(By.CSS_SELECTOR, 'td.player-id')
+    positive = driver.find_elements(By.CSS_SELECTOR, 'td.positive-net')
+    negative = driver.find_elements(By.CSS_SELECTOR, 'td.negative-net')
+    
+    
+    names = []
+    amts = []
+    for player in players:
+        new_name = player.text.split(" @ ")[0]
+        names.append(new_name)
+    for pos in positive:
+        amts.append(int(pos.text))
+    for neg in negative:
+        amts.append(int(neg.text))
+    driver.close()
+    st.session_state['number_members'] = len(names)
+    st.session_state['member_names'] = names
+    st.session_state['amounts'] = amts
     
 names = [st.empty() for i in range(st.session_state['number_members'])]
 amounts = [st.empty() for i in range(st.session_state['number_members'])]
 deletes = [st.empty() for i in range(st.session_state['number_members'])]
-
     
 for i in range(st.session_state['number_members']):
     
