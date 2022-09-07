@@ -1,5 +1,22 @@
 import streamlit as st
 import heapq
+# from selenium import webdriver
+# from selenium.common.exceptions import TimeoutException
+# from selenium.webdriver.common.by import By
+# from selenium.webdriver.firefox.options import Options
+# from selenium.webdriver.firefox.service import Service
+# from selenium.webdriver.support import expected_conditions as EC
+# from selenium.webdriver.support.ui import WebDriverWait
+# from webdriver_manager.firefox import GeckoDriverManager
+
+# from selenium import webdriver
+# from selenium.webdriver.common.keys import Keys
+# from selenium.webdriver.common.by import By
+# from selenium.webdriver.chrome.service import Service
+# from selenium.webdriver.chrome.options import Options
+
+# from webdriver_manager.chrome import ChromeDriverManager
+
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
@@ -9,16 +26,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.firefox import GeckoDriverManager
 
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
 
-from webdriver_manager.chrome import ChromeDriverManager
-
-
-cloud = False
+cloud = True
 
 def generate_transactions(names, amounts):
     assert(len(names) == len(amounts))
@@ -78,17 +87,13 @@ if crawl_website:
     TIMEOUT = 20
     
     if cloud:
-        service = Service(executable_path=ChromeDriverManager().install())
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        driver = webdriver.Chrome(service=service,options=chrome_options)
-        # firefoxOptions = Options()
-        # firefoxOptions.add_argument("--headless")
-        # service = Service(GeckoDriverManager().install())
-        # driver = webdriver.Firefox(
-        #     options=firefoxOptions,
-        #     service=service,
-        # )
+        firefoxOptions = Options()
+        firefoxOptions.add_argument("--headless")
+        service = Service(GeckoDriverManager().install())
+        driver = webdriver.Firefox(
+            options=firefoxOptions,
+            service=service,
+)
     
     else:
         service = Service(executable_path=ChromeDriverManager().install())
